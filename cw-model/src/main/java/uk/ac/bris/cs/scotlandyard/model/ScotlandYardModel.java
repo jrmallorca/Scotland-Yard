@@ -25,10 +25,57 @@ import uk.ac.bris.cs.gamekit.graph.ImmutableGraph;
 // TODO implement all methods and pass all tests
 public class ScotlandYardModel implements ScotlandYardGame {
 
+    /**
+     * An immutable list whose length is the maximum number of moves that Mr X
+     * can play in a game. True means that Mr.X reveals its location where as
+     * False conceals it.
+	 *
+	 * Must be non-null and non-empty
+     */ // Copied from ScotlandYardView.java
+	List<Boolean> rounds;
+
+	/**
+	 * An immutable view of the graph the game is using.
+	 *
+	 * Must be non-null and non-empty
+	 */ // Copied from ScotlandYardView.java
+	Graph<Integer, Transport> graph;
+
 	public ScotlandYardModel(List<Boolean> rounds, Graph<Integer, Transport> graph,
 			PlayerConfiguration mrX, PlayerConfiguration firstDetective,
 			PlayerConfiguration... restOfTheDetectives) {
-		// TODO
+
+		// Returns a bool for empty rounds/maps via isEmpty() method
+		if (rounds.isEmpty()) {
+			throw new IllegalArgumentException("Empty rounds");
+		}
+		if (graph.isEmpty()) {
+			throw new IllegalArgumentException("Empty map");
+		}
+
+		/*
+		requireNonNull() method allows for a NullPointerException to be thrown when encountering a null.
+		We want to fail as fast as possible when we encounter a problem. Tests for nulls.
+		 */
+		this.rounds = requireNonNull(rounds);
+		this.graph = requireNonNull(graph);
+
+		// Returns bool if mrX is BLACK or not
+		if (mrX.colour.isDetective()) {
+			throw new IllegalArgumentException("MrX should be Black");
+		}
+
+		/*
+		We'll temporarily put the detectives into an ArrayList so that we can loop through tests for them.
+		configuration represents mrX and first detective. Implement a for-each loop.
+		 */
+		ArrayList<PlayerConfiguration> configurations = new ArrayList<>();
+		for (PlayerConfiguration configuration : restOfTheDetectives) {
+			configurations.add(requireNonNull(configuration));
+			configurations.add(0, firstDetective);
+			configurations.add(0, mrX);
+		}
+
 	}
 
 	@Override
