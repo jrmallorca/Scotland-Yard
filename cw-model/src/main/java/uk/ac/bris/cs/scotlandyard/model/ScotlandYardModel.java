@@ -68,13 +68,37 @@ public class ScotlandYardModel implements ScotlandYardGame {
 		/*
 		We'll temporarily put the detectives into an ArrayList so that we can loop through tests for them.
 		configuration represents mrX and first detective. Implement a for-each loop.
+
+		Code different to website because testNullDetectiveShouldThrow wouldn't work. We seperately test
+		the firstDetective.
 		 */
 		ArrayList<PlayerConfiguration> configurations = new ArrayList<>();
+		configurations.add(requireNonNull(firstDetective));
+		configurations.add(0, mrX);
 		for (PlayerConfiguration configuration : restOfTheDetectives) {
 			configurations.add(requireNonNull(configuration));
-			configurations.add(0, firstDetective);
-			configurations.add(0, mrX);
 		}
+
+		/*
+		We're making a set of locations and colours to check if there are any duplicated. If there's none,
+		add them to the set.
+		 */
+		Set<Integer> setLocations = new HashSet<>();
+		for (PlayerConfiguration configuration : configurations) {
+			if (setLocations.contains(configuration.location)) {
+				throw new IllegalArgumentException("Duplicate location");
+			}
+			setLocations.add(configuration.location);
+		}
+
+		Set<Colour> setColours = new HashSet<>();
+		for (PlayerConfiguration configuration : configurations) {
+			if (setColours.contains(configuration.colour)) {
+				throw new IllegalArgumentException("Duplicate colour");
+			}
+			setColours.add(configuration.colour);
+		}
+
 
 	}
 
