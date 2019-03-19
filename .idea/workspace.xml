@@ -20,8 +20,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardModel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="90" column="24" selection-start-line="90" selection-start-column="24" selection-end-line="90" selection-end-column="24" />
+            <state relative-caret-position="218">
+              <caret line="134" column="70" selection-start-line="134" selection-start-column="70" selection-end-line="134" selection-end-column="70" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -32,34 +32,46 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cw-model/src/test/java/uk/ac/bris/cs/scotlandyard/model/ModelCreationTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-646">
-              <caret line="44" column="3" selection-start-line="44" selection-start-column="3" selection-end-line="44" selection-end-column="3" />
+            <state relative-caret-position="-85">
+              <caret line="117" column="20" selection-start-line="117" selection-start-column="16" selection-end-line="117" selection-end-column="56" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardGame.java">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="714">
+              <caret line="42" column="29" selection-start-line="42" selection-start-column="29" selection-end-line="42" selection-end-column="29" />
+            </state>
+          </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardView.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1615">
-              <caret line="99" column="30" selection-start-line="99" selection-start-column="30" selection-end-line="99" selection-end-column="30" />
+            <state relative-caret-position="697">
+              <caret line="63" column="33" selection-start-line="63" selection-start-column="33" selection-end-line="63" selection-end-column="33" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/PlayerConfiguration.java">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="269">
+              <caret line="29" column="7" lean-forward="true" selection-start-line="29" selection-start-column="7" selection-end-line="29" selection-end-column="7" />
+            </state>
+          </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardPlayer.java">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="391">
+              <caret line="24" column="39" selection-start-line="23" selection-start-column="30" selection-end-line="24" selection-end-column="39" />
+            </state>
+          </provider>
         </entry>
       </file>
     </leaf>
@@ -70,6 +82,7 @@
       <find>create</find>
       <find>createGame</find>
       <find>restOfTheDetectives</find>
+      <find>getPlayerTicket</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -100,6 +113,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -290,12 +305,10 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1552474231400" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553017543636" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunDashboard">
@@ -321,6 +334,11 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -347,7 +365,7 @@
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.496994" visible="true" weight="0.34961438" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.496994" visible="true" weight="0.2673522" />
       <window_info id="Designer" order="1" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Capture Tool" order="3" />
@@ -355,14 +373,15 @@
       <window_info id="Learn" order="5" weight="0.32969153" />
       <window_info id="Structure" order="6" sideWeight="0.50300604" side_tool="true" weight="0.34061697" />
       <window_info id="Favorites" order="7" sideWeight="0.50300604" side_tool="true" weight="0.34061697" />
+      <window_info anchor="bottom" id="Messages" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.3293011" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39919356" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3293011" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="7" visible="true" weight="0.3293011" />
+      <window_info anchor="bottom" id="Terminal" order="7" visible="true" weight="0.3293011" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.3293011" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -458,32 +477,54 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardGame.java">
-      <provider selected="true" editor-type-id="text-editor" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="714">
+          <caret line="42" column="29" selection-start-line="42" selection-start-column="29" selection-end-line="42" selection-end-column="29" />
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardView.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1615">
-          <caret line="99" column="30" selection-start-line="99" selection-start-column="30" selection-end-line="99" selection-end-column="30" />
+        <state relative-caret-position="697">
+          <caret line="63" column="33" selection-start-line="63" selection-start-column="33" selection-end-line="63" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cw-model/src/test/java/uk/ac/bris/cs/scotlandyard/model/ModelCreationTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-85">
+          <caret line="117" column="20" selection-start-line="117" selection-start-column="16" selection-end-line="117" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/Transport.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/Ticket.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="281">
+          <caret line="19" column="28" selection-start-line="19" selection-start-column="28" selection-end-line="19" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/PlayerConfiguration.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="269">
+          <caret line="29" column="7" lean-forward="true" selection-start-line="29" selection-start-column="7" selection-end-line="29" selection-end-column="7" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardPlayer.java">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/PlayerConfiguration.java">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cw-model/src/test/java/uk/ac/bris/cs/scotlandyard/model/ModelCreationTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-646">
-          <caret line="44" column="3" selection-start-line="44" selection-start-column="3" selection-end-line="44" selection-end-column="3" />
+        <state relative-caret-position="391">
+          <caret line="24" column="39" selection-start-line="23" selection-start-column="30" selection-end-line="24" selection-end-column="39" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardModel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="90" column="24" selection-start-line="90" selection-start-column="24" selection-end-line="90" selection-end-column="24" />
+        <state relative-caret-position="218">
+          <caret line="134" column="70" selection-start-line="134" selection-start-column="70" selection-end-line="134" selection-end-column="70" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

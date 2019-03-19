@@ -10,6 +10,9 @@ import static java.util.Objects.requireNonNull;
 import static uk.ac.bris.cs.scotlandyard.model.Colour.BLACK;
 import static uk.ac.bris.cs.scotlandyard.model.Ticket.DOUBLE;
 import static uk.ac.bris.cs.scotlandyard.model.Ticket.SECRET;
+import static uk.ac.bris.cs.scotlandyard.model.Ticket.TAXI;
+import static uk.ac.bris.cs.scotlandyard.model.Ticket.BUS;
+import static uk.ac.bris.cs.scotlandyard.model.Ticket.UNDERGROUND;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -73,6 +76,7 @@ public class ScotlandYardModel implements ScotlandYardGame {
 		the firstDetective.
 		 */
 		ArrayList<PlayerConfiguration> configurations = new ArrayList<>();
+
 		configurations.add(requireNonNull(firstDetective));
 		configurations.add(0, mrX);
 		for (PlayerConfiguration configuration : restOfTheDetectives) {
@@ -99,6 +103,37 @@ public class ScotlandYardModel implements ScotlandYardGame {
 			setColours.add(configuration.colour);
 		}
 
+		/*
+		Checking SECRET and DOUBLE tickets, and missing tickets FOR DETECTIVES
+		 */
+		configurations.remove(mrX);
+		for(PlayerConfiguration configuration : configurations) {
+			if(configuration.tickets.containsKey(SECRET)) {
+				throw new IllegalArgumentException("Detective has SECRET ticket");
+			}
+			if(configuration.tickets.containsKey(DOUBLE)) {
+				throw new IllegalArgumentException("Detective has DOUBLE ticket");
+			}
+			if(!(configuration.tickets.containsKey(TAXI) &&
+				 configuration.tickets.containsKey(BUS) &&
+				 configuration.tickets.containsKey(UNDERGROUND))) {
+				throw new IllegalArgumentException("Detective is missing tickets");
+			}
+		}
+		/*
+		Checking if MrX is missing any tickets
+		 */
+		if(!(mrX.tickets.containsKey(TAXI) &&
+				mrX.tickets.containsKey(BUS) &&
+				mrX.tickets.containsKey(UNDERGROUND) &&
+				mrX.tickets.containsKey(DOUBLE) &&
+				mrX.tickets.containsKey(SECRET))) {
+			throw new IllegalArgumentException("mrX is missing tickets");
+		}
+
+		/*
+		Create a list of ScotlandYardPlayer's using a for loop (maybe)
+		 */
 
 	}
 
