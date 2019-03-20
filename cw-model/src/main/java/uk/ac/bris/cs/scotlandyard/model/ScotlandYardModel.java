@@ -28,22 +28,11 @@ import uk.ac.bris.cs.gamekit.graph.ImmutableGraph;
 // TODO implement all methods and pass all tests
 public class ScotlandYardModel implements ScotlandYardGame {
 
-    /**
-     * An immutable list whose length is the maximum number of moves that Mr X
-     * can play in a game. True means that Mr.X reveals its location where as
-     * False conceals it.
-	 *
-	 * Must be non-null and non-empty
-     */ // Copied from ScotlandYardView.java
+	// Fields
 	List<Boolean> rounds;
-
-	/**
-	 * An immutable view of the graph the game is using.
-	 *
-	 * Must be non-null and non-empty
-	 */ // Copied from ScotlandYardView.java
 	Graph<Integer, Transport> graph;
 
+	// Methods
 	public ScotlandYardModel(List<Boolean> rounds, Graph<Integer, Transport> graph,
 			PlayerConfiguration mrX, PlayerConfiguration firstDetective,
 			PlayerConfiguration... restOfTheDetectives) {
@@ -85,7 +74,7 @@ public class ScotlandYardModel implements ScotlandYardGame {
 
 		/*
 		We're making a set of locations and colours to check if there are any duplicated. If there's none,
-		add them to the set. MAKE SURE ALL TICKET TYPES EXIST LIKE THE DOUBLE OR SECRET
+		add them to the set.
 		 */
 		Set<Integer> LocationSet = new HashSet<>();
 		for (PlayerConfiguration configuration : configurations) {
@@ -104,10 +93,8 @@ public class ScotlandYardModel implements ScotlandYardGame {
 		}
 
 		/*
-		Checking SECRET and DOUBLE tickets, and missing tickets FOR DETECTIVES
-		KEEP THIS IN MIND IF JUST IN CASE IT FUCKS UP WHEN WE RUN OUT OF TICKETS
-		ERROR ERROR
-		DERP DERP (Only to notice dw bout this for now)
+		Checking SECRET and DOUBLE tickets for detectives are more than 0.
+		Also checks if all players have all types of tickets (e.g. Detectives should have SECRET key but value = 0).
 		 */
 		for (PlayerConfiguration configuration : configurations) {
 			if(!(configuration.tickets.containsKey(DOUBLE) &&
@@ -125,16 +112,6 @@ public class ScotlandYardModel implements ScotlandYardGame {
 					throw new IllegalArgumentException("Detective has SECRET ticket");
 				}
 			}
-			/*
-			Checking if MrX is missing any tickets
-			 */
-//			if(!configuration.tickets.containsKey(DOUBLE) &&
-//			   !configuration.tickets.containsKey(SECRET) &&
-//			   !configuration.tickets.containsKey(TAXI) &&
-//			   !configuration.tickets.containsKey(BUS) &&
-//			   !configuration.tickets.containsKey(UNDERGROUND) ) {
-//				throw new IllegalArgumentException("mrX is missing tickets");
-//			}
 		}
 
 		/*
