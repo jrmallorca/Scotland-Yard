@@ -77,62 +77,69 @@ public class ScotlandYardModel implements ScotlandYardGame {
 		 */
 		ArrayList<PlayerConfiguration> configurations = new ArrayList<>();
 
-		configurations.add(requireNonNull(firstDetective));
-		configurations.add(0, mrX);
-		for (PlayerConfiguration configuration : restOfTheDetectives) {
-			configurations.add(requireNonNull(configuration));
+		configurations.add(0, requireNonNull(mrX)); // Add mrX into configurations
+		configurations.add(requireNonNull(firstDetective)); // Add firstDetective into configurations
+		for (PlayerConfiguration detective : restOfTheDetectives) { // Add restOfTheDetectives into configurations
+			configurations.add(requireNonNull(detective));
 		}
 
 		/*
 		We're making a set of locations and colours to check if there are any duplicated. If there's none,
-		add them to the set.
+		add them to the set. MAKE SURE ALL TICKET TYPES EXIST LIKE THE DOUBLE OR SECRET
 		 */
-		Set<Integer> setLocations = new HashSet<>();
+		Set<Integer> LocationSet = new HashSet<>();
 		for (PlayerConfiguration configuration : configurations) {
-			if (setLocations.contains(configuration.location)) {
+			if (LocationSet.contains(configuration.location)) {
 				throw new IllegalArgumentException("Duplicate location");
 			}
-			setLocations.add(configuration.location);
+			LocationSet.add(configuration.location);
 		}
 
-		Set<Colour> setColours = new HashSet<>();
+		Set<Colour> ColourSet = new HashSet<>();
 		for (PlayerConfiguration configuration : configurations) {
-			if (setColours.contains(configuration.colour)) {
+			if (ColourSet.contains(configuration.colour)) {
 				throw new IllegalArgumentException("Duplicate colour");
 			}
-			setColours.add(configuration.colour);
+			ColourSet.add(configuration.colour);
 		}
 
 		/*
 		Checking SECRET and DOUBLE tickets, and missing tickets FOR DETECTIVES
+		KEEP THIS IN MIND IF JUST IN CASE IT FUCKS UP WHEN WE RUN OUT OF TICKETS
+		ERROR ERROR
+		DERP DERP (Only to notice dw bout this for now)
 		 */
-		configurations.remove(mrX);
-		for(PlayerConfiguration configuration : configurations) {
-			if(configuration.tickets.containsKey(SECRET)) {
-				throw new IllegalArgumentException("Detective has SECRET ticket");
-			}
-			if(configuration.tickets.containsKey(DOUBLE)) {
-				throw new IllegalArgumentException("Detective has DOUBLE ticket");
-			}
-			if(!(configuration.tickets.containsKey(TAXI) &&
+		for (PlayerConfiguration configuration : configurations) {
+			if(!(configuration.tickets.containsKey(DOUBLE) &&
+				 configuration.tickets.containsKey(SECRET) &&
+				 configuration.tickets.containsKey(TAXI) &&
 				 configuration.tickets.containsKey(BUS) &&
-				 configuration.tickets.containsKey(UNDERGROUND))) {
-				throw new IllegalArgumentException("Detective is missing tickets");
+				 configuration.tickets.containsKey(UNDERGROUND)) ) {
+				throw new IllegalArgumentException("Detective/Mr X is missing tickets");
 			}
-		}
-		/*
-		Checking if MrX is missing any tickets
-		 */
-		if(!(mrX.tickets.containsKey(TAXI) &&
-				mrX.tickets.containsKey(BUS) &&
-				mrX.tickets.containsKey(UNDERGROUND) &&
-				mrX.tickets.containsKey(DOUBLE) &&
-				mrX.tickets.containsKey(SECRET))) {
-			throw new IllegalArgumentException("mrX is missing tickets");
+			if (configuration.colour.isDetective()) {
+				if(configuration.tickets.get(DOUBLE) > 0) {
+					throw new IllegalArgumentException("Detective has DOUBLE ticket");
+				}
+				if(configuration.tickets.get(SECRET) > 0) {
+					throw new IllegalArgumentException("Detective has SECRET ticket");
+				}
+			}
+			/*
+			Checking if MrX is missing any tickets
+			 */
+//			if(!configuration.tickets.containsKey(DOUBLE) &&
+//			   !configuration.tickets.containsKey(SECRET) &&
+//			   !configuration.tickets.containsKey(TAXI) &&
+//			   !configuration.tickets.containsKey(BUS) &&
+//			   !configuration.tickets.containsKey(UNDERGROUND) ) {
+//				throw new IllegalArgumentException("mrX is missing tickets");
+//			}
 		}
 
 		/*
 		Create a list of ScotlandYardPlayer's using a for loop (maybe)
+		There are a max of 6 players.
 		 */
 
 	}
