@@ -7,12 +7,8 @@ import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
-import static uk.ac.bris.cs.scotlandyard.model.Colour.BLACK;
-import static uk.ac.bris.cs.scotlandyard.model.Ticket.DOUBLE;
-import static uk.ac.bris.cs.scotlandyard.model.Ticket.SECRET;
-import static uk.ac.bris.cs.scotlandyard.model.Ticket.TAXI;
-import static uk.ac.bris.cs.scotlandyard.model.Ticket.BUS;
-import static uk.ac.bris.cs.scotlandyard.model.Ticket.UNDERGROUND;
+import static uk.ac.bris.cs.scotlandyard.model.Colour.*;
+import static uk.ac.bris.cs.scotlandyard.model.Ticket.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,14 +21,13 @@ import uk.ac.bris.cs.gamekit.graph.Edge;
 import uk.ac.bris.cs.gamekit.graph.Graph;
 import uk.ac.bris.cs.gamekit.graph.ImmutableGraph;
 
-// TODO implement all methods and pass all tests
 public class ScotlandYardModel implements ScotlandYardGame {
 
 	// Fields
 	List<Boolean> rounds;
 	Graph<Integer, Transport> graph;
 
-	// Methods
+	// Constructor (FINISHED)
 	public ScotlandYardModel(List<Boolean> rounds, Graph<Integer, Transport> graph,
 			PlayerConfiguration mrX, PlayerConfiguration firstDetective,
 			PlayerConfiguration... restOfTheDetectives) {
@@ -115,12 +110,18 @@ public class ScotlandYardModel implements ScotlandYardGame {
 		}
 
 		/*
-		Create a list of ScotlandYardPlayer's using a for loop (maybe)
-		There are a max of 6 players.
+		Create a list of ScotlandYardPlayer(s) (Their indexes are representative to the specific player hopefully)
 		 */
+		List<ScotlandYardPlayer> players = new ArrayList<>();
+		for (PlayerConfiguration configuration : configurations) {
+			ScotlandYardPlayer p = new ScotlandYardPlayer(configuration.player, configuration.colour,
+														  configuration.location, configuration.tickets);
+			players.add(p);
+		}
 
 	}
 
+	// Methods
 	@Override
 	public void registerSpectator(Spectator spectator) {
 		// TODO
@@ -189,8 +190,7 @@ public class ScotlandYardModel implements ScotlandYardGame {
 
 	@Override
 	public List<Boolean> getRounds() {
-		// TODO
-		throw new RuntimeException("Implement me");
+		return Collections.unmodifiableList(rounds);
 	}
 
 	@Override
