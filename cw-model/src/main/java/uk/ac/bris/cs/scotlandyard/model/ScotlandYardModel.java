@@ -26,6 +26,7 @@ public class ScotlandYardModel implements ScotlandYardGame {
 	// Fields
 	List<Boolean> rounds;
 	Graph<Integer, Transport> graph;
+	List<ScotlandYardPlayer> players;
 
 	// Constructor (FINISHED)
 	public ScotlandYardModel(List<Boolean> rounds, Graph<Integer, Transport> graph,
@@ -112,7 +113,7 @@ public class ScotlandYardModel implements ScotlandYardGame {
 		/*
 		Create a list of ScotlandYardPlayer(s) (Their indexes are representative to the specific player hopefully)
 		 */
-		List<ScotlandYardPlayer> players = new ArrayList<>();
+		this.players = new ArrayList<>();
 		for (PlayerConfiguration configuration : configurations) {
 			ScotlandYardPlayer p = new ScotlandYardPlayer(configuration.player, configuration.colour,
 														  configuration.location, configuration.tickets);
@@ -148,8 +149,11 @@ public class ScotlandYardModel implements ScotlandYardGame {
 
 	@Override
 	public List<Colour> getPlayers() {
-		// TODO
-		throw new RuntimeException("Implement me");
+		List<Colour> tempPlayers = new ArrayList<>();
+		for (ScotlandYardPlayer player : players) {
+			tempPlayers.add(player.colour());
+		}
+		return unmodifiableList(tempPlayers);
 	}
 
 	@Override
@@ -190,13 +194,12 @@ public class ScotlandYardModel implements ScotlandYardGame {
 
 	@Override
 	public List<Boolean> getRounds() {
-		return Collections.unmodifiableList(rounds);
+		return unmodifiableList(rounds);
 	}
 
 	@Override
 	public Graph<Integer, Transport> getGraph() {
-		// TODO
-		throw new RuntimeException("Implement me");
+		return new ImmutableGraph<Integer, Transport>(graph);
 	}
 
 }
