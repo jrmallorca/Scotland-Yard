@@ -27,6 +27,10 @@ public class ScotlandYardModel implements ScotlandYardGame {
 	List<Boolean> rounds;
 	Graph<Integer, Transport> graph;
 	List<ScotlandYardPlayer> players;
+	// FIelds which are being tracked
+	int currentRound = NOT_STARTED;
+	int playerIndex = 0; // The index of the current player in List<ScotlandYardPlayer> players;
+	int mrXLocation = 0; // Starts as 0 if Mr X not revealed yet. Stores specified location number once revealed.
 
 	// Constructor (FINISHED)
 	public ScotlandYardModel(List<Boolean> rounds, Graph<Integer, Transport> graph,
@@ -119,7 +123,6 @@ public class ScotlandYardModel implements ScotlandYardGame {
 														  configuration.location, configuration.tickets);
 			players.add(p);
 		}
-
 	}
 
 	// Methods
@@ -156,40 +159,62 @@ public class ScotlandYardModel implements ScotlandYardGame {
 		return unmodifiableList(tempPlayers);
 	}
 
+	/*
+	COME BACK LATER
+	 */
 	@Override
 	public Set<Colour> getWinningPlayers() {
-		// TODO
-		throw new RuntimeException("Implement me");
+		Set<Colour> temp = new HashSet<>();
+		return unmodifiableSet(temp);
 	}
 
+	/*
+	PUT A TRACKER LATER ONCE YOU'RE DOING ROUNDS
+	FOR MR X
+	 */
 	@Override
 	public Optional<Integer> getPlayerLocation(Colour colour) {
-		// TODO
-		throw new RuntimeException("Implement me");
+		if (colour.equals(BLACK)) {
+			return Optional.of(mrXLocation);
+		}
+		for (ScotlandYardPlayer player : players) {
+			if (player.colour().equals(colour)) return Optional.of(player.location());
+		}
+		return Optional.empty();
 	}
 
 	@Override
 	public Optional<Integer> getPlayerTickets(Colour colour, Ticket ticket) {
-		// TODO
-		throw new RuntimeException("Implement me");
+		for (ScotlandYardPlayer player : players) {
+			if (player.colour().equals(colour)) {
+				return Optional.ofNullable(player.tickets().get(ticket));
+			}
+		}
+		return Optional.empty();
 	}
 
+	/*
+	Return for later
+	 */
 	@Override
 	public boolean isGameOver() {
-		// TODO
-		throw new RuntimeException("Implement me");
+		return false;
 	}
 
+	/*
+	ALERT (Once you implement startRotate method, then come back)
+	 */
 	@Override
 	public Colour getCurrentPlayer() {
-		// TODO
-		throw new RuntimeException("Implement me");
+		return players.get(playerIndex).colour();
 	}
 
+	/*
+	(Once you implement startRotate method, then come back)
+	 */
 	@Override
 	public int getCurrentRound() {
-		// TODO
-		throw new RuntimeException("Implement me");
+		return currentRound;
 	}
 
 	@Override
