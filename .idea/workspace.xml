@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="3b3b1067-7c71-4bef-a5ff-8fad7c0499d3" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/Move.java" beforeDir="false" afterPath="$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/Move.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardModel.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -21,45 +22,50 @@
         <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardModel.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="170">
-              <caret line="31" column="96" lean-forward="true" selection-start-line="31" selection-start-column="96" selection-end-line="31" selection-end-column="96" />
+              <caret line="136" column="29" selection-start-line="136" selection-start-column="29" selection-end-line="136" selection-end-column="29" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#6096#6097#0" expanded="true" />
-                <element signature="e#6143#6144#0" expanded="true" />
-                <element signature="e#6314#6315#0" expanded="true" />
-                <element signature="e#6340#6341#0" expanded="true" />
-                <element signature="e#6388#6389#0" expanded="true" />
-                <element signature="e#6426#6427#0" expanded="true" />
-                <element signature="e#6485#6486#0" expanded="true" />
-                <element signature="e#6544#6545#0" expanded="true" />
+                <element signature="e#7937#7938#0" expanded="true" />
+                <element signature="e#8104#8105#0" expanded="true" />
+                <element signature="e#8240#8241#0" expanded="true" />
+                <element signature="e#8326#8327#0" expanded="true" />
+                <element signature="e#8444#8445#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardGame.java">
+        <entry file="file://$PROJECT_DIR$/cw-model/src/test/java/uk/ac/bris/cs/scotlandyard/model/ModelValidMoveTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="8" column="59" selection-start-line="8" selection-start-column="59" selection-end-line="8" selection-end-column="59" />
+            <state relative-caret-position="-204" />
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/Move.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="323">
+              <caret line="24" column="7" selection-start-line="24" selection-start-column="7" selection-end-line="24" selection-end-column="7" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardView.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="487">
-              <caret line="62" column="7" selection-start-line="62" selection-start-column="7" selection-end-line="62" selection-end-column="7" />
-            </state>
-          </provider>
+        <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/PassMove.java">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/MoveVisitor.java">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardPlayer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="895">
-              <caret line="120" selection-start-line="120" selection-end-line="120" />
+            <state relative-caret-position="1105">
+              <caret line="99" column="7" selection-start-line="99" selection-start-column="7" selection-end-line="99" selection-end-column="7" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -68,10 +74,25 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cw-model/src/test/java/uk/ac/bris/cs/scotlandyard/model/ModelCreationTest.java">
+        <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/Player.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="129">
-              <caret line="328" column="68" selection-start-line="328" selection-start-column="15" selection-end-line="328" selection-end-column="68" />
+            <state relative-caret-position="289">
+              <caret line="22" column="92" selection-start-line="22" selection-start-column="92" selection-end-line="22" selection-end-column="92" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cw-model/src/test/java/uk/ac/bris/cs/scotlandyard/model/ModelRoundTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="34">
+              <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -94,6 +115,7 @@
       <find>visit</find>
       <find>m</find>
       <find>conceal</find>
+      <find>ScotlandYardView</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -106,6 +128,9 @@
         <option value="$PROJECT_DIR$/cw-model/src/test/java/uk/ac/bris/cs/scotlandyard/model/ModelCreationTest.java" />
         <option value="$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/PlayerConfiguration.java" />
         <option value="$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardGame.java" />
+        <option value="$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/Move.java" />
+        <option value="$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardPlayer.java" />
+        <option value="$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/Player.java" />
         <option value="$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardModel.java" />
       </list>
     </option>
@@ -128,7 +153,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -145,6 +169,12 @@
               <item name="Scotland-Yard" type="b2602c69:ProjectViewProjectNode" />
               <item name="Scotland-Yard" type="462c0819:PsiDirectoryNode" />
               <item name="cw-model" type="462c0819:PsiDirectoryNode" />
+              <item name=".mvn" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Scotland-Yard" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Scotland-Yard" type="462c0819:PsiDirectoryNode" />
+              <item name="cw-model" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -203,19 +233,6 @@
               <item name="ac" type="462c0819:PsiDirectoryNode" />
               <item name="bris" type="462c0819:PsiDirectoryNode" />
               <item name="cs" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Scotland-Yard" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Scotland-Yard" type="462c0819:PsiDirectoryNode" />
-              <item name="cw-model" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="uk" type="462c0819:PsiDirectoryNode" />
-              <item name="ac" type="462c0819:PsiDirectoryNode" />
-              <item name="bris" type="462c0819:PsiDirectoryNode" />
-              <item name="cs" type="462c0819:PsiDirectoryNode" />
-              <item name="gamekit" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Scotland-Yard" type="b2602c69:ProjectViewProjectNode" />
@@ -327,17 +344,24 @@
               <item name="cs" type="462c0819:PsiDirectoryNode" />
               <item name="scotlandyard" type="462c0819:PsiDirectoryNode" />
               <item name="model" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Scotland-Yard" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Scotland-Yard" type="462c0819:PsiDirectoryNode" />
+              <item name="cw-model" type="462c0819:PsiDirectoryNode" />
+              <item name="target" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
       <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553536194474" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Utility" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553683622314" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Critter/src/critter/Main.java" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.completion" />
   </component>
   <component name="RunDashboard">
@@ -393,9 +417,8 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.496994" visible="true" weight="0.31362468" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.496994" visible="true" weight="0.3348329" />
       <window_info id="Designer" order="1" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Capture Tool" order="3" />
@@ -630,29 +653,12 @@
     <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/Transport.java">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/Player.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="5" column="3" selection-start-line="5" selection-start-column="3" selection-end-line="5" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/TicketMove.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="11">
           <caret line="7" column="24" selection-start-line="7" selection-start-column="24" selection-end-line="7" selection-end-column="24" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardGame.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="59" selection-start-line="8" selection-start-column="59" selection-end-line="8" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/PassMove.java">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/DoubleMove.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -661,19 +667,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/Move.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="25" column="21" selection-start-line="25" selection-start-column="21" selection-end-line="25" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/MoveVisitor.java">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/Colour.java">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/cw-model/src/test/java/uk/ac/bris/cs/scotlandyard/model/ModelCreationTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="129">
@@ -681,17 +674,77 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../Critter/src/critter/Critter.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Critter/src/critter/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#410#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cw-model/src/test/java/uk/ac/bris/cs/scotlandyard/model/ModelRoundTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/Colour.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardGame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="59" selection-start-line="8" selection-start-column="59" selection-end-line="8" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cw-model/src/test/java/uk/ac/bris/cs/scotlandyard/model/ModelValidMoveTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-204" />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardView.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="487">
+        <state relative-caret-position="-391">
           <caret line="62" column="7" selection-start-line="62" selection-start-column="7" selection-end-line="62" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/MoveVisitor.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/Move.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="24" column="7" selection-start-line="24" selection-start-column="7" selection-end-line="24" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/PassMove.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/Player.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="22" column="92" selection-start-line="22" selection-start-column="92" selection-end-line="22" selection-end-column="92" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardPlayer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="895">
-          <caret line="120" selection-start-line="120" selection-end-line="120" />
+        <state relative-caret-position="1105">
+          <caret line="99" column="7" selection-start-line="99" selection-start-column="7" selection-end-line="99" selection-end-column="7" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -701,17 +754,14 @@
     <entry file="file://$PROJECT_DIR$/cw-model/src/main/java/uk/ac/bris/cs/scotlandyard/model/ScotlandYardModel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
-          <caret line="31" column="96" lean-forward="true" selection-start-line="31" selection-start-column="96" selection-end-line="31" selection-end-column="96" />
+          <caret line="136" column="29" selection-start-line="136" selection-start-column="29" selection-end-line="136" selection-end-column="29" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#6096#6097#0" expanded="true" />
-            <element signature="e#6143#6144#0" expanded="true" />
-            <element signature="e#6314#6315#0" expanded="true" />
-            <element signature="e#6340#6341#0" expanded="true" />
-            <element signature="e#6388#6389#0" expanded="true" />
-            <element signature="e#6426#6427#0" expanded="true" />
-            <element signature="e#6485#6486#0" expanded="true" />
-            <element signature="e#6544#6545#0" expanded="true" />
+            <element signature="e#7937#7938#0" expanded="true" />
+            <element signature="e#8104#8105#0" expanded="true" />
+            <element signature="e#8240#8241#0" expanded="true" />
+            <element signature="e#8326#8327#0" expanded="true" />
+            <element signature="e#8444#8445#0" expanded="true" />
           </folding>
         </state>
       </provider>

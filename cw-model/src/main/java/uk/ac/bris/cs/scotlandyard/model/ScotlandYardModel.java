@@ -21,7 +21,7 @@ import uk.ac.bris.cs.gamekit.graph.Edge;
 import uk.ac.bris.cs.gamekit.graph.Graph;
 import uk.ac.bris.cs.gamekit.graph.ImmutableGraph;
 
-public class ScotlandYardModel implements ScotlandYardGame {
+public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 
 	// Fields
 	List<Boolean> rounds;
@@ -126,6 +126,26 @@ public class ScotlandYardModel implements ScotlandYardGame {
 	}
 
 	// Methods
+	public ScotlandYardPlayer getCurrentScotlandYardPlayer(Colour colour) {
+		int i = 0;
+		while (i < players.size()) {
+			if (!(players.get(i).colour().equals(colour))) {
+				++i;
+			}
+			else break;
+		}
+		return players.get(i)
+	}
+
+	/*
+	REMEMBER TO IMPLEMENT THIS
+	 */
+	@Override // Method from Consumer interface
+	public void accept(Move move) {
+		// TODO
+		throw new RuntimeException("Implement me");
+	}
+
 	@Override
 	public void registerSpectator(Spectator spectator) {
 		// TODO
@@ -138,10 +158,32 @@ public class ScotlandYardModel implements ScotlandYardGame {
 		throw new RuntimeException("Implement me");
 	}
 
+	/*
+	CONCEPT
+	1. We get the current player
+	2. Depending on their colour, we give them a valid set of moves they can make
+	3. We use this so that they can make a move
+	4. We check whether the move they made was ok via the accept method by consumer
+		4.1. If true, go ahead and call back for the next player
+		4.2. If false, throw an error ???
+	 */
 	@Override
 	public void startRotate() {
-		// TODO
-		throw new RuntimeException("Implement me");
+		Colour currentColour = getCurrentPlayer();
+		ScotlandYardPlayer currentPlayer = getCurrentScotlandYardPlayer(currentColour);
+		Set<Move> validMoves = new HashSet<>(); // Valid moves the player can CHOOSE
+
+		/*
+		1. You pass 'this' for the 1st parameter because it's essentially a ScotlandYardView
+		2. You pass the currentPlayer's location for the 2nd parameter
+		3. You pass the valid set of moves the player can choose to do for the 3rd parameter
+		4. You pass 'this' for the 4th parameter so that the method can be "called back" so
+		   the next player will use this method.
+		 */
+		currentPlayer.player().makeMove(this, getPlayerLocation(currentPlayer.colour()).get(), validMoves, this);
+
+		// We see if the move the player just made can be accepted
+//		accept();
 	}
 
 	@Override

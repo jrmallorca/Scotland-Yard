@@ -16,7 +16,7 @@ public abstract class Move implements Serializable {
 	}
 
 	/**
-	 * @return the colour of the playing making the move
+	 * @return the colour of the player making the move
 	 */
 	public Colour colour() {
 		return colour;
