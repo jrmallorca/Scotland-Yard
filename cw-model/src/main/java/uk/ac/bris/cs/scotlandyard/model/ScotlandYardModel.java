@@ -134,7 +134,17 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 			}
 			else break;
 		}
-		return players.get(i)
+		return players.get(i);
+	}
+
+	public Set<Move> getValidMoves(Colour colour) {
+		PassMove passMove = new PassMove(colour);
+		Set<Move> temp = new HashSet<>();
+		temp.add(passMove);
+//		if (colour.isMrX()) {
+//
+//		}
+		return temp;
 	}
 
 	/*
@@ -171,7 +181,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 	public void startRotate() {
 		Colour currentColour = getCurrentPlayer();
 		ScotlandYardPlayer currentPlayer = getCurrentScotlandYardPlayer(currentColour);
-		Set<Move> validMoves = new HashSet<>(); // Valid moves the player can CHOOSE
+		Set<Move> validMoves = getValidMoves(currentColour); // Valid moves the player can CHOOSE
 
 		/*
 		1. You pass 'this' for the 1st parameter because it's essentially a ScotlandYardView
