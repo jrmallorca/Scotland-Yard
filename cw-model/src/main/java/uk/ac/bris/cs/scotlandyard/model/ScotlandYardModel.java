@@ -27,12 +27,13 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 	List<Boolean> rounds;
 	Graph<Integer, Transport> graph;
 	List<ScotlandYardPlayer> players;
+	private Set<Move> validMoves;
 	// FIelds which are being tracked
 	int currentRound = NOT_STARTED;
 	int playerIndex = 0; // The index of the current player in List<ScotlandYardPlayer> players;
 	int mrXLocation = 0; // Starts as 0 if Mr X not revealed yet. Stores specified location number once revealed.
 
-	// Constructor (FINISHED)
+	// Constructor
 	public ScotlandYardModel(List<Boolean> rounds, Graph<Integer, Transport> graph,
 			PlayerConfiguration mrX, PlayerConfiguration firstDetective,
 			PlayerConfiguration... restOfTheDetectives) {
@@ -137,23 +138,47 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 		return players.get(i);
 	}
 
+	/*
+	CONCEPT FOR validMoves
+
+	We're using TicketMove because we're literally giving them a choice of using for example a TAXI ticket to a specific
+	node or a TAXI ticket to another specific node or a BUS node... etc. We don't just give them tickets, we also give
+	the location of using that ticket.
+
+	In actuality, it's a set of TicketMove but the makeMove takes in a parameter of only Move.
+
+	Example of a valid move set based on the player's current location where a tuple represents:
+	(Ticket type, Destination),
+		{ (TAXI, Node 52), (TAXI, Node 48), (BUS, Node 53) }
+
+	1. Check playerLocation
+	2. Check if currentNode is a bus station, ferry station (SECRET Move), underground, or only taxi.
+	2. Check # of tickets for each type of ticket.
+		2.1. If ticket count = 0 for a specific ticket type, there are no locations you can use for nodes which use that
+			 ticket (unless you can use another ticket like using a BUS instead of TAXI for that node).
+		2.2. If over 0, check for the location that it can go to and add it in the set.
+		2.3. DUNNO FOR SECRET
+		2.4. DUNNO FOR DOUBLEMOVE (Using multiple dispatch apparently).
+	3. Check if destination is occupied (Different cases for detective/Mr X).
+	 */
 	public Set<Move> getValidMoves(Colour colour) {
-		PassMove passMove = new PassMove(colour);
 		Set<Move> temp = new HashSet<>();
-		temp.add(passMove);
-//		if (colour.isMrX()) {
-//
-//		}
+		getPlayerLocation(colour);
+
+
+
 		return temp;
 	}
 
 	/*
 	REMEMBER TO IMPLEMENT THIS
+	Will probably have to interact with MoveVisitor
 	 */
 	@Override // Method from Consumer interface
 	public void accept(Move move) {
-		// TODO
-		throw new RuntimeException("Implement me");
+		if (!(validMoves.contains(requireNonNull(move)))) {
+		    throw new IllegalArgumentException("Can't pass null move");
+        }
 	}
 
 	@Override
@@ -169,7 +194,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 	}
 
 	/*
-	CONCEPT
+	CONCEPT FOR startROTATE
 	1. We get the current player
 	2. Depending on their colour, we give them a valid set of moves they can make
 	3. We use this so that they can make a move
@@ -179,21 +204,21 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 	 */
 	@Override
 	public void startRotate() {
-		Colour currentColour = getCurrentPlayer();
-		ScotlandYardPlayer currentPlayer = getCurrentScotlandYardPlayer(currentColour);
-		Set<Move> validMoves = getValidMoves(currentColour); // Valid moves the player can CHOOSE
+		if (!(isGameOver())) {
+			Colour currentColour = getCurrentPlayer();
+			ScotlandYardPlayer currentPlayer = getCurrentScotlandYardPlayer(currentColour);
+			validMoves = getValidMoves(currentPlayer);
 
-		/*
-		1. You pass 'this' for the 1st parameter because it's essentially a ScotlandYardView
-		2. You pass the currentPlayer's location for the 2nd parameter
-		3. You pass the valid set of moves the player can choose to do for the 3rd parameter
-		4. You pass 'this' for the 4th parameter so that the method can be "called back" so
-		   the next player will use this method.
-		 */
-		currentPlayer.player().makeMove(this, getPlayerLocation(currentPlayer.colour()).get(), validMoves, this);
-
-		// We see if the move the player just made can be accepted
-//		accept();
+			/*
+			1. You pass 'this' for the 1st parameter because it's essentially a ScotlandYardView
+			2. You pass the currentPlayer's location for the 2nd parameter
+			3. You pass the valid set of moves the player can choose to do for the 3rd parameter
+			4. You pass 'this' for the 4th parameter so that the method can be "called back" so
+			   the next player will use this method.
+			 */
+			currentPlayer.player().makeMove(this, getPlayerLocation(currentPlayer.colour()).get(), validMoves, this);
+		}
+		else throw new IllegalArgumentException("Can't do this when the game is over");
 	}
 
 	@Override
