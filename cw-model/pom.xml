@@ -41,7 +41,7 @@
             <artifactId>javafx-web</artifactId>
             <version>11</version>
         </dependency>
-        
+
         <!--dependencies for UI-->
         <dependency>
             <groupId>net.kurobako.gesturefx</groupId>

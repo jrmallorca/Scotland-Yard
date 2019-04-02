@@ -1,25 +1,18 @@
 package uk.ac.bris.cs.scotlandyard.model;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singletonList;
-import static java.util.Collections.unmodifiableCollection;
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableSet;
-import static java.util.Objects.requireNonNull;
-import static uk.ac.bris.cs.scotlandyard.model.Colour.*;
-import static uk.ac.bris.cs.scotlandyard.model.Ticket.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Consumer;
 import uk.ac.bris.cs.gamekit.graph.Edge;
 import uk.ac.bris.cs.gamekit.graph.Graph;
 import uk.ac.bris.cs.gamekit.graph.ImmutableGraph;
+import uk.ac.bris.cs.gamekit.graph.Node;
+
+import java.util.*;
+import java.util.function.Consumer;
+
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableSet;
+import static java.util.Objects.requireNonNull;
+import static uk.ac.bris.cs.scotlandyard.model.Colour.BLACK;
+import static uk.ac.bris.cs.scotlandyard.model.Ticket.*;
 
 public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 
@@ -31,7 +24,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 	// FIelds which are being tracked
 	int currentRound = NOT_STARTED;
 	int playerIndex = 0; // The index of the current player in List<ScotlandYardPlayer> players;
-	int mrXLocation = 0; // Starts as 0 if Mr X not revealed yet. Stores specified location number once revealed.
+	Integer mrXLocation = 0; // Starts as 0 if Mr X not revealed yet. Stores specified location number once revealed.
 
 	// Constructor
 	public ScotlandYardModel(List<Boolean> rounds, Graph<Integer, Transport> graph,
@@ -62,7 +55,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 		We'll temporarily put the detectives into an ArrayList so that we can loop through tests for them.
 		configuration represents mrX and first detective. Implement a for-each loop.
 
-		Code different to website because testNullDetectiveShouldThrow wouldn't work. We seperately test
+		Code different to website because testNullDetectiveShouldThrow wouldn't work. We separately test
 		the firstDetective.
 		 */
 		ArrayList<PlayerConfiguration> configurations = new ArrayList<>();
@@ -127,7 +120,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 	}
 
 	// Methods
-	public ScotlandYardPlayer getCurrentScotlandYardPlayer(Colour colour) {
+	private ScotlandYardPlayer getCurrentScotlandYardPlayer(Colour colour) {
 		int i = 0;
 		while (i < players.size()) {
 			if (!(players.get(i).colour().equals(colour))) {
@@ -152,33 +145,79 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 		{ (TAXI, Node 52), (TAXI, Node 48), (BUS, Node 53) }
 
 	1. Check playerLocation
+
 	2. Check if currentNode is a bus station, ferry station (SECRET Move), underground, or only taxi.
-	2. Check # of tickets for each type of ticket.
-		2.1. If ticket count = 0 for a specific ticket type, there are no locations you can use for nodes which use that
+		*FOR 1. AND 2.:
+		 Map<Integer, Transport> tickets
+		 Node type = Integer. Edge type = Transport.
+		 Use node type to know its location in the map. Use edge type to know what kind of transport you use for this
+		 path.
+		 Depending on the node, it can have multiple edges to represent different types of transports. E.g. if we can
+		 get to a node using either TAXI or BUS, it actually has 2 edges.
+
+	3. Check # of tickets for each type of ticket.
+		3.1. If ticket count = 0 for a specific ticket type, there are no locations you can use for nodes which use that
 			 ticket (unless you can use another ticket like using a BUS instead of TAXI for that node).
-		2.2. If over 0, check for the location that it can go to and add it in the set.
-		2.3. DUNNO FOR SECRET
-		2.4. DUNNO FOR DOUBLEMOVE (Using multiple dispatch apparently).
-	3. Check if destination is occupied (Different cases for detective/Mr X).
+		3.2. If over 0, check for the location that it can go to and add it in the set.
+		3.3. For SECRET, Either you use it as any ticket or as a ferry
+		3.4. For DOUBLEMOVE (Using multiple dispatch apparently). Calling method again and doing the same processes.
+			 You must see if they have enough tickets for a doubleMove. It can be TAXITAXI or TAXIBUS or SECRETSECRET.
+
+	4. Check if destination is occupied (Different cases for detective/Mr X).
 	 */
 	public Set<Move> getValidMoves(Colour colour) {
-		Set<Move> temp = new HashSet<>();
-		getPlayerLocation(colour);
+		Set<Move> tempMoves = new HashSet<>();
 
+		// tempMoves.add(new PassMove(colour));
+		// ^This method makes it so the callback is not null
+		Integer tempLocation = getPlayerLocation(colour).get();
+		Graph<Integer, Transport> tempGraph = getGraph();
+		Node<Integer> currentNode = tempGraph.getNode(tempLocation);
+		Collection<Edge<Integer, Transport>> edgesFromCurrentNode = tempGraph.getEdgesFrom(currentNode);
 
+		for (Edge<Integer, Transport> edge : edgesFromCurrentNode) {
+			Ticket tempTicket = fromTransport(edge.data());
+			int numOfTempTickets = getPlayerTickets(colour, tempTicket).get();
+			int destination = edge.destination().value();
 
-		return temp;
+			if (numOfTempTickets > 0) {
+				switch (tempTicket) {
+					case TAXI: // Doesn't end until the break statement so for non-special tickets, do code until the
+					case BUS:  // first break
+					case UNDERGROUND:
+						tempMoves.add(new TicketMove(colour, tempTicket, destination));
+						break;
+					case DOUBLE:
+						
+						break;
+					case SECRET:
+						break;
+				}
+				tempMoves.add(new TicketMove(colour, fromTransport(edge.data()), destination));
+			}
+		}
+
+		return tempMoves;
 	}
 
 	/*
-	REMEMBER TO IMPLEMENT THIS
 	Will probably have to interact with MoveVisitor
+
+	CONCEPT FOR accept
+	1. Check if the move the player made is in validMoves
+	2. Actually execute the move
+	3. Subtract ticket count
+	4. Update player location
+
+	(After accept is done, you may have to get the next player and call that to use makeMove)
+
+	*If we reject, it just means throwing an IllegalArgumentException. You're not to call the method again or allow the
+	 player to try again.
 	 */
 	@Override // Method from Consumer interface
 	public void accept(Move move) {
-		if (!(validMoves.contains(requireNonNull(move)))) {
-		    throw new IllegalArgumentException("Can't pass null move");
-        }
+		if (!validMoves.contains(requireNonNull(move))) throw new IllegalArgumentException("Can't pass null move");
+
 	}
 
 	@Override
@@ -204,10 +243,10 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 	 */
 	@Override
 	public void startRotate() {
-		if (!(isGameOver())) {
+		if (!isGameOver()) {
 			Colour currentColour = getCurrentPlayer();
 			ScotlandYardPlayer currentPlayer = getCurrentScotlandYardPlayer(currentColour);
-			validMoves = getValidMoves(currentPlayer);
+			validMoves = getValidMoves(currentColour);
 
 			/*
 			1. You pass 'this' for the 1st parameter because it's essentially a ScotlandYardView
@@ -216,7 +255,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 			4. You pass 'this' for the 4th parameter so that the method can be "called back" so
 			   the next player will use this method.
 			 */
-			currentPlayer.player().makeMove(this, getPlayerLocation(currentPlayer.colour()).get(), validMoves, this);
+			currentPlayer.player().makeMove(this, currentPlayer.location(), validMoves, this);
 		}
 		else throw new IllegalArgumentException("Can't do this when the game is over");
 	}
@@ -249,13 +288,17 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 	PUT A TRACKER LATER ONCE YOU'RE DOING ROUNDS
 	FOR MR X
 	 */
+	// Optional is like a Maybe in Haskell. Useful for the prevention of being fucked up by nulls
 	@Override
 	public Optional<Integer> getPlayerLocation(Colour colour) {
 		if (colour.equals(BLACK)) {
 			return Optional.of(mrXLocation);
 		}
 		for (ScotlandYardPlayer player : players) {
-			if (player.colour().equals(colour)) return Optional.of(player.location());
+			if (player.colour().equals(colour)) {
+				Integer temp = player.location();
+				return Optional.of(temp);
+			}
 		}
 		return Optional.empty();
 	}
@@ -264,7 +307,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 	public Optional<Integer> getPlayerTickets(Colour colour, Ticket ticket) {
 		for (ScotlandYardPlayer player : players) {
 			if (player.colour().equals(colour)) {
-				return Optional.ofNullable(player.tickets().get(ticket));
+				return Optional.of(player.tickets().get(ticket));
 			}
 		}
 		return Optional.empty();
@@ -301,7 +344,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 
 	@Override
 	public Graph<Integer, Transport> getGraph() {
-		return new ImmutableGraph<Integer, Transport>(graph);
+		return new ImmutableGraph<>(graph);
 	}
 
 }
