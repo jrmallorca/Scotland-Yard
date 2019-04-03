@@ -132,13 +132,53 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 	}
 
 	/*
+	Gets a set of TicketMoves
+	 */
+	public Set<TicketMove> getTicketMoves(Colour colour, Graph<Integer, Transport> graph, Integer location) {
+		Set<TicketMove> temp = new HashSet<>();
+
+		Node<Integer> currentNode = graph.getNode(location);
+		Collection<Edge<Integer, Transport>> edges = graph.getEdgesFrom(currentNode);
+
+		for (Edge<Integer, Transport> edge : edges) {
+			if (fromTransport(edge.data()).equals(TAXI) && getPlayerTickets(colour, TAXI).get() > 0) {
+				temp.add(new TicketMove(colour, TAXI, edge.destination().value()));
+			}
+			if (fromTransport(edge.data()).equals(BUS) && getPlayerTickets(colour, BUS).get() > 0) {
+				temp.add(new TicketMove(colour, BUS, edge.destination().value()));
+			}
+			if (fromTransport(edge.data()).equals(UNDERGROUND) && getPlayerTickets(colour, UNDERGROUND).get() > 0) {
+				temp.add(new TicketMove(colour, UNDERGROUND, edge.destination().value()));
+			}
+			if (fromTransport(edge.data()).equals(SECRET) && getPlayerTickets(colour, SECRET).get() > 0) {
+				temp.add(new TicketMove(colour, SECRET, edge.destination().value()));
+			}
+		}
+
+		return temp;
+	}
+
+	public Set<Move> getDoubleMoves(Colour colour, Graph<Integer, Transport> graph, Set<TicketMove> firstTicketMoves) {
+		Set<Move> temp = new HashSet<>();
+
+		for (TicketMove firstMove : firstTicketMoves) {
+			Set<TicketMove> secondTicketMoves = getTicketMoves(colour, graph, firstMove.destination());
+			for (TicketMove secondMove : secondTicketMoves) {
+				temp.add(new DoubleMove(colour, firstMove.ticket(), firstMove.destination(), secondMove.ticket(), secondMove.destination()));
+			}
+		}
+
+		return temp;
+	}
+
+	/*
 	CONCEPT FOR validMoves
 
 	We're using TicketMove because we're literally giving them a choice of using for example a TAXI ticket to a specific
 	node or a TAXI ticket to another specific node or a BUS node... etc. We don't just give them tickets, we also give
 	the location of using that ticket.
 
-	In actuality, it's a set of TicketMove but the makeMove takes in a parameter of only Move.
+	In actuality, it's a set of TicketMoves, PassMoves and DoubleMoves but the makeMove takes in a parameter of only Move.
 
 	Example of a valid move set based on the player's current location where a tuple represents:
 	(Ticket type, Destination),
@@ -148,7 +188,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 
 	2. Check if currentNode is a bus station, ferry station (SECRET Move), underground, or only taxi.
 		*FOR 1. AND 2.:
-		 Map<Integer, Transport> tickets
+		 Graph<Integer, Transport> tickets
 		 Node type = Integer. Edge type = Transport.
 		 Use node type to know its location in the map. Use edge type to know what kind of transport you use for this
 		 path.
@@ -168,34 +208,13 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 	public Set<Move> getValidMoves(Colour colour) {
 		Set<Move> tempMoves = new HashSet<>();
 
-		// tempMoves.add(new PassMove(colour));
-		// ^This method makes it so the callback is not null
-		Integer tempLocation = getPlayerLocation(colour).get();
-		Graph<Integer, Transport> tempGraph = getGraph();
-		Node<Integer> currentNode = tempGraph.getNode(tempLocation);
-		Collection<Edge<Integer, Transport>> edgesFromCurrentNode = tempGraph.getEdgesFrom(currentNode);
+		Graph<Integer, Transport> graph = getGraph();
+		Integer location = getPlayerLocation(colour).get();
+		Set<TicketMove> firstTicketMoves = getTicketMoves(colour, graph, location);
 
-		for (Edge<Integer, Transport> edge : edgesFromCurrentNode) {
-			Ticket tempTicket = fromTransport(edge.data());
-			int numOfTempTickets = getPlayerTickets(colour, tempTicket).get();
-			int destination = edge.destination().value();
-
-			if (numOfTempTickets > 0) {
-				switch (tempTicket) {
-					case TAXI: // Doesn't end until the break statement so for non-special tickets, do code until the
-					case BUS:  // first break
-					case UNDERGROUND:
-						tempMoves.add(new TicketMove(colour, tempTicket, destination));
-						break;
-					case DOUBLE:
-						
-						break;
-					case SECRET:
-						break;
-				}
-				tempMoves.add(new TicketMove(colour, fromTransport(edge.data()), destination));
-			}
-		}
+		tempMoves.add(new PassMove(colour)); // Add a PassMove
+		tempMoves.addAll(firstTicketMoves); // Add all TicketMoves
+		tempMoves.addAll(getDoubleMoves(colour, graph, firstTicketMoves)); // Add all DoubleMoves
 
 		return tempMoves;
 	}
