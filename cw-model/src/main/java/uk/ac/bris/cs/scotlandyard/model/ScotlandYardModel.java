@@ -1,18 +1,26 @@
 package uk.ac.bris.cs.scotlandyard.model;
 
-import uk.ac.bris.cs.gamekit.graph.Edge;
-import uk.ac.bris.cs.gamekit.graph.Graph;
-import uk.ac.bris.cs.gamekit.graph.ImmutableGraph;
-import uk.ac.bris.cs.gamekit.graph.Node;
-
-import java.util.*;
-import java.util.function.Consumer;
-
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 import static uk.ac.bris.cs.scotlandyard.model.Colour.BLACK;
 import static uk.ac.bris.cs.scotlandyard.model.Ticket.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
+import uk.ac.bris.cs.gamekit.graph.Edge;
+import uk.ac.bris.cs.gamekit.graph.Graph;
+import uk.ac.bris.cs.gamekit.graph.ImmutableGraph;
+import uk.ac.bris.cs.gamekit.graph.Node;
 
 public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 
@@ -20,8 +28,8 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 	List<Boolean> rounds;
 	Graph<Integer, Transport> graph;
 	List<ScotlandYardPlayer> players;
-	private Set<Move> validMoves;
-	// FIelds which are being tracked
+	Set<Move> validMoves;
+	// Fields which are being tracked
 	int currentRound = NOT_STARTED;
 	int playerIndex = 0; // The index of the current player in List<ScotlandYardPlayer> players;
 	Integer mrXLocation = 0; // Starts as 0 if Mr X not revealed yet. Stores specified location number once revealed.
@@ -120,103 +128,93 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 	}
 
 	// Methods
-	private ScotlandYardPlayer getCurrentScotlandYardPlayer(Colour colour) {
+	public ScotlandYardPlayer getCurrentScotlandYardPlayer(Colour colour) {
 		int i = 0;
 		while (i < players.size()) {
-			if (!(players.get(i).colour().equals(colour))) {
-				++i;
-			}
+			if (!(players.get(i).colour().equals(colour))) ++i;
 			else break;
 		}
 		return players.get(i);
 	}
 
-	/*
-	Gets a set of TicketMoves
-	 */
-	public Set<TicketMove> getTicketMoves(Colour colour, Graph<Integer, Transport> graph, Integer location) {
+	// Gets a set of TicketMoves (for getValidMoves())
+	public Set<TicketMove> getTicketMoves(ScotlandYardPlayer player, Graph<Integer, Transport> graph, int location) {
 		Set<TicketMove> temp = new HashSet<>();
 
 		Node<Integer> currentNode = graph.getNode(location);
 		Collection<Edge<Integer, Transport>> edges = graph.getEdgesFrom(currentNode);
+        Colour colour = player.colour();
+
+        boolean occupiedByDetective = false;
 
 		for (Edge<Integer, Transport> edge : edges) {
-			if (fromTransport(edge.data()).equals(TAXI) && getPlayerTickets(colour, TAXI).get() > 0) {
-				temp.add(new TicketMove(colour, TAXI, edge.destination().value()));
+			// Checking if another detective has already taken position in the path's destination
+			// This is used for the methods of the following comments below
+			for (ScotlandYardPlayer detective : players) {
+				if (detective.isDetective() && detective != player) occupiedByDetective = detective.location() == edge.destination().value();
 			}
-			if (fromTransport(edge.data()).equals(BUS) && getPlayerTickets(colour, BUS).get() > 0) {
-				temp.add(new TicketMove(colour, BUS, edge.destination().value()));
-			}
-			if (fromTransport(edge.data()).equals(UNDERGROUND) && getPlayerTickets(colour, UNDERGROUND).get() > 0) {
-				temp.add(new TicketMove(colour, UNDERGROUND, edge.destination().value()));
-			}
-			if (fromTransport(edge.data()).equals(SECRET) && getPlayerTickets(colour, SECRET).get() > 0) {
-				temp.add(new TicketMove(colour, SECRET, edge.destination().value()));
-			}
+
+			// Checking if player has enough tickets for this single move and add it if true
+			Ticket ticket = fromTransport(edge.data());
+			if (player.hasTickets(ticket) && !occupiedByDetective) temp.add(new TicketMove(colour, ticket, edge.destination().value()));
+
+			// If player has a SECRET ticket(s), give them a SECRET version of the ticket above
+			if (player.hasTickets(SECRET) && !occupiedByDetective) temp.add(new TicketMove(colour, SECRET, edge.destination().value()));
 		}
 
-		return temp;
+		// If there are no valid moves, return an empty set
+		// (If it's detective we give it a PassMove in the getValidMoves() method)
+		if (temp.isEmpty()) return emptySet();
+		else return temp;
 	}
 
-	public Set<Move> getDoubleMoves(Colour colour, Graph<Integer, Transport> graph, Set<TicketMove> firstTicketMoves) {
+	// Gets a set of DoubleMoves (for getValidMoves())
+	public Set<Move> getDoubleMoves(ScotlandYardPlayer player, Graph<Integer, Transport> graph, Set<TicketMove> firstTicketMoves) {
 		Set<Move> temp = new HashSet<>();
 
-		for (TicketMove firstMove : firstTicketMoves) {
-			Set<TicketMove> secondTicketMoves = getTicketMoves(colour, graph, firstMove.destination());
-			for (TicketMove secondMove : secondTicketMoves) {
-				temp.add(new DoubleMove(colour, firstMove.ticket(), firstMove.destination(), secondMove.ticket(), secondMove.destination()));
-			}
+        Colour colour = player.colour();
+
+        // Checking if the player has enough DoubleMove tickets
+        // Checking if the currentRound is also the last round (Mr X can't do a double move in the last round)
+        if ((getCurrentRound() != getRounds().size() - 1 ) && player.hasTickets(DOUBLE)) {
+            for (TicketMove firstMove : firstTicketMoves) {
+                // Getting second set of moves
+                Set<TicketMove> secondTicketMoves = getTicketMoves(player, graph, firstMove.destination());
+
+                for (TicketMove secondMove : secondTicketMoves) {
+                    // Checking if the ticket needed for the first movement is the same as the second movement ticket
+                    if (firstMove.ticket() == secondMove.ticket()) {
+                        // Checking if that ticket type is of quantity 2 or above. If true, add
+                        if (player.hasTickets(firstMove.ticket(), 2)) temp.add(new DoubleMove(colour, firstMove.ticket(), firstMove.destination(), secondMove.ticket(), secondMove.destination()));
+                    }
+                    // Else, check if player has enough tickets for both different ticket types
+                    else if (player.hasTickets(firstMove.ticket()) && player.hasTickets(secondMove.ticket())) temp.add(new DoubleMove(colour, firstMove.ticket(), firstMove.destination(), secondMove.ticket(), secondMove.destination()));
+                }
+            }
 		}
 
-		return temp;
+		// If there are no valid moves, return an empty set
+        if (temp.isEmpty()) return emptySet();
+        else return temp;
 	}
 
-	/*
-	CONCEPT FOR validMoves
+	// The main method of validMoves which unifies the set of TicketMoves, DoubleMoves and adds PassMove if needed
+    // Can also return an empty set if Mr X has no more moves left
+	public Set<Move> getValidMoves(ScotlandYardPlayer player) {
+        Graph<Integer, Transport> graph = getGraph();
 
-	We're using TicketMove because we're literally giving them a choice of using for example a TAXI ticket to a specific
-	node or a TAXI ticket to another specific node or a BUS node... etc. We don't just give them tickets, we also give
-	the location of using that ticket.
+		// Getting set of the first movements in DoubleMove
+		Set<TicketMove> firstTicketMoves = getTicketMoves(player, graph, player.location());
 
-	In actuality, it's a set of TicketMoves, PassMoves and DoubleMoves but the makeMove takes in a parameter of only Move.
+		// Unification of TicketMoves and DoubleMoves
+        Set<Move> tempMoves = new HashSet<>(firstTicketMoves); // First assigns set of TicketMoves inside tempMoves
+        if (player.isMrX()) tempMoves.addAll(getDoubleMoves(player, graph, firstTicketMoves)); // Add all DoubleMoves
+		// If detective has no more tickets, give them a PassMove
+        if (player.isDetective() && tempMoves.isEmpty()) tempMoves.add(new PassMove(player.colour())); // Add a PassMove
 
-	Example of a valid move set based on the player's current location where a tuple represents:
-	(Ticket type, Destination),
-		{ (TAXI, Node 52), (TAXI, Node 48), (BUS, Node 53) }
-
-	1. Check playerLocation
-
-	2. Check if currentNode is a bus station, ferry station (SECRET Move), underground, or only taxi.
-		*FOR 1. AND 2.:
-		 Graph<Integer, Transport> tickets
-		 Node type = Integer. Edge type = Transport.
-		 Use node type to know its location in the map. Use edge type to know what kind of transport you use for this
-		 path.
-		 Depending on the node, it can have multiple edges to represent different types of transports. E.g. if we can
-		 get to a node using either TAXI or BUS, it actually has 2 edges.
-
-	3. Check # of tickets for each type of ticket.
-		3.1. If ticket count = 0 for a specific ticket type, there are no locations you can use for nodes which use that
-			 ticket (unless you can use another ticket like using a BUS instead of TAXI for that node).
-		3.2. If over 0, check for the location that it can go to and add it in the set.
-		3.3. For SECRET, Either you use it as any ticket or as a ferry
-		3.4. For DOUBLEMOVE (Using multiple dispatch apparently). Calling method again and doing the same processes.
-			 You must see if they have enough tickets for a doubleMove. It can be TAXITAXI or TAXIBUS or SECRETSECRET.
-
-	4. Check if destination is occupied (Different cases for detective/Mr X).
-	 */
-	public Set<Move> getValidMoves(Colour colour) {
-		Set<Move> tempMoves = new HashSet<>();
-
-		Graph<Integer, Transport> graph = getGraph();
-		Integer location = getPlayerLocation(colour).get();
-		Set<TicketMove> firstTicketMoves = getTicketMoves(colour, graph, location);
-
-		tempMoves.add(new PassMove(colour)); // Add a PassMove
-		tempMoves.addAll(firstTicketMoves); // Add all TicketMoves
-		tempMoves.addAll(getDoubleMoves(colour, graph, firstTicketMoves)); // Add all DoubleMoves
-
-		return tempMoves;
+		// If Mr X has no tickets left (or has nothing but DOUBLE tickets), return empty set
+        if (tempMoves.isEmpty()) return emptySet();
+		else return tempMoves;
 	}
 
 	/*
@@ -237,6 +235,13 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 	public void accept(Move move) {
 		if (!validMoves.contains(requireNonNull(move))) throw new IllegalArgumentException("Can't pass null move");
 
+        if (playerIndex == 0) ++currentRound;
+        ++playerIndex;
+        if (playerIndex == players.size()) playerIndex = 0;
+
+        ScotlandYardPlayer currentPlayer = getCurrentScotlandYardPlayer(getCurrentPlayer());
+        validMoves = getValidMoves(currentPlayer);
+        currentPlayer.player().makeMove(this, currentPlayer.location(), validMoves, this);
 	}
 
 	@Override
@@ -265,7 +270,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move> {
 		if (!isGameOver()) {
 			Colour currentColour = getCurrentPlayer();
 			ScotlandYardPlayer currentPlayer = getCurrentScotlandYardPlayer(currentColour);
-			validMoves = getValidMoves(currentColour);
+			validMoves = getValidMoves(currentPlayer);
 
 			/*
 			1. You pass 'this' for the 1st parameter because it's essentially a ScotlandYardView
