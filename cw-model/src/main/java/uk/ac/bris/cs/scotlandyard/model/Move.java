@@ -27,7 +27,7 @@ public abstract class Move implements Serializable {
 	 *
 	 * @param visitor the visitor, not null
 	 */
-	public abstract void visit(MoveVisitor visitor);
+	public abstract void visit(MoveVisitor visitor); // The accept method of a Visitor
 
 	@Override
 	public String toString() {

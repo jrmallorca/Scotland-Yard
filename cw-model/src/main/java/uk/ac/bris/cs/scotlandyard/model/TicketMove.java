@@ -38,6 +38,7 @@ public class TicketMove extends Move {
 		return destination;
 	}
 
+	// The accept method of a Visitor
 	@Override
 	public void visit(MoveVisitor visitor) {
 		Objects.requireNonNull(visitor).visit(this);

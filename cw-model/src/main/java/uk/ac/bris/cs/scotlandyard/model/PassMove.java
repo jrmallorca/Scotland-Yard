@@ -17,6 +17,7 @@ public class PassMove extends Move {
 		super(colour);
 	}
 
+	// The accept method of a Visitor
 	@Override
 	public void visit(MoveVisitor visitor) {
 		Objects.requireNonNull(visitor).visit(this);
