@@ -6,6 +6,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableSet;
+import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static uk.ac.bris.cs.scotlandyard.model.Colour.BLACK;
 import static uk.ac.bris.cs.scotlandyard.model.Ticket.*;
@@ -32,7 +33,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 	// Fields which are being tracked
 	int currentRound = NOT_STARTED;
 	int playerIndex = 0; // The index of the current player in List<ScotlandYardPlayer> players;
-	int mrXLocation = 0; // Stores the revealed locations of Mr X
+	int revealedLocation = 0; // Stores the revealed locations of Mr X
 
     // ----------------------------------------------------------------------------------------------------------------
 	// Constructor
@@ -145,20 +146,23 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 	}
 
     // Gets a set of TicketMoves (for getValidMoves())
-    public Set<TicketMove> getTicketMoves(ScotlandYardPlayer player, Graph<Integer, Transport> graph, int location) {
+    public Set<TicketMove> getTicketMoves(ScotlandYardPlayer player, Graph<Integer, Transport> graphView, int location) {
         Set<TicketMove> temp = new HashSet<>();
 
-        Node<Integer> currentNode = graph.getNode(location);
-        Collection<Edge<Integer, Transport>> edges = graph.getEdgesFrom(currentNode);
+        Node<Integer> currentNode = graphView.getNode(location);
+        Collection<Edge<Integer, Transport>> edges = graphView.getEdgesFrom(currentNode);
         Colour colour = player.colour();
 
         boolean occupiedByDetective = false;
 
         for (Edge<Integer, Transport> edge : edges) {
             // Checking if another detective has already taken position in the path's destination
-            // This is used for the methods of the following comments below
+            // This is used for the methods of the 2 following comments below
             for (ScotlandYardPlayer detective : players) {
-                if (detective.isDetective() && detective != player) occupiedByDetective = detective.location() == edge.destination().value();
+                if (detective.isDetective() && detective != player) {
+                	occupiedByDetective = detective.location() == edge.destination().value();
+                	if (occupiedByDetective) break;
+				}
             }
 
             // Checking if player has enough tickets for this single move and add it if true
@@ -176,7 +180,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
     }
 
     // Gets a set of DoubleMoves (for getValidMoves())
-    public Set<Move> getDoubleMoves(ScotlandYardPlayer player, Graph<Integer, Transport> graph, Set<TicketMove> firstTicketMoves) {
+    public Set<Move> getDoubleMoves(ScotlandYardPlayer player, Graph<Integer, Transport> graphView, Set<TicketMove> firstTicketMoves) {
         Set<Move> temp = new HashSet<>();
 
         Colour colour = player.colour();
@@ -186,7 +190,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
         if ((getCurrentRound() != getRounds().size() - 1 ) && player.hasTickets(DOUBLE)) {
             for (TicketMove firstMove : firstTicketMoves) {
                 // Getting second set of moves
-                Set<TicketMove> secondTicketMoves = getTicketMoves(player, graph, firstMove.destination());
+                Set<TicketMove> secondTicketMoves = getTicketMoves(player, graphView, firstMove.destination());
 
                 for (TicketMove secondMove : secondTicketMoves) {
                     // Checking if the ticket needed for the first movement is the same as the second movement ticket
@@ -208,14 +212,14 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
     // The main method of validMoves which unifies the set of TicketMoves, DoubleMoves and adds PassMove if needed
     // Can also return an empty set if Mr X has no more moves left
     public Set<Move> getValidMoves(ScotlandYardPlayer player) {
-        Graph<Integer, Transport> graph = getGraph();
+        Graph<Integer, Transport> graphView = getGraph();
 
         // Getting set of the first movements in DoubleMove
-        Set<TicketMove> firstTicketMoves = getTicketMoves(player, graph, player.location());
+        Set<TicketMove> firstTicketMoves = getTicketMoves(player, graphView, player.location());
 
         // Unification of TicketMoves and DoubleMoves
         Set<Move> tempMoves = new HashSet<>(firstTicketMoves); // First assigns set of TicketMoves inside tempMoves
-        if (player.isMrX()) tempMoves.addAll(getDoubleMoves(player, graph, firstTicketMoves)); // Add all DoubleMoves
+        if (player.isMrX()) tempMoves.addAll(getDoubleMoves(player, graphView, firstTicketMoves)); // Add all DoubleMoves
         // If detective has no more tickets, give them a PassMove
         if (player.isDetective() && tempMoves.isEmpty()) tempMoves.add(new PassMove(player.colour())); // Add a PassMove
 
@@ -240,7 +244,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 			 */
 			currentPlayer.player().makeMove(this, currentPlayer.location(), validMoves, this);
 		}
-		else throw new IllegalArgumentException("Can't do this when the game is over");
+		else throw new IllegalStateException("Can't do this when the game is over");
 	}
 
 	// Sees if move is non-null, then executes proper play logic from ticket of move
@@ -250,7 +254,6 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 
 		MoveVisitor visitor = new MoveVisitor() {
 			ScotlandYardPlayer player = getCurrentScotlandYardPlayer(move.colour());
-			List<Boolean> roundList = getRounds();
 
 			/*
 			Play logic
@@ -269,7 +272,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 				player.location(move.destination());
 
 				if (player.isMrX()) {
-					if (roundList.get(currentRound)) mrXLocation = player.location();
+					if (rounds.get(currentRound)) revealedLocation = player.location();
 					++currentRound;
 				}
 				else getCurrentScotlandYardPlayer(BLACK).addTicket(move.ticket());
@@ -280,13 +283,13 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
         		// Checks first movement
 				player.removeTicket(move.firstMove().ticket());
 				player.location(move.firstMove().destination());
-				if (roundList.get(currentRound)) mrXLocation = player.location();
+				if (rounds.get(currentRound)) revealedLocation = player.location();
 				++currentRound;
 
 				// Checks second movement
 				player.removeTicket(move.secondMove().ticket());
 				player.location(move.finalDestination());
-				if (roundList.get(currentRound)) mrXLocation = player.location();
+				if (rounds.get(currentRound)) revealedLocation = player.location();
 				++currentRound;
 
 				player.removeTicket(DOUBLE);
@@ -323,19 +326,24 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 		return unmodifiableList(tempPlayers);
 	}
 
-	/*
-	COME BACK LATER
-	 */
 	@Override
 	public Set<Colour> getWinningPlayers() {
 		Set<Colour> temp = new HashSet<>();
+
+		if (winners().equals("Detectives")) {
+			for (ScotlandYardPlayer player : players) {
+				if (player.isDetective()) temp.add(player.colour());
+			}
+		}
+		if (winners().equals("Mr X")) temp.add(BLACK);
+
 		return unmodifiableSet(temp);
 	}
 
-	// Optional is like a Maybe in Haskell. Useful for the prevention of being fucked up by nulls
+	// Optional is like a Maybe in Haskell. Useful for the prevention of being screwed up by nulls
 	@Override
 	public Optional<Integer> getPlayerLocation(Colour colour) {
-		if (colour.equals(BLACK)) return Optional.of(mrXLocation);
+		if (colour.equals(BLACK)) return Optional.of(revealedLocation);
 
 		for (ScotlandYardPlayer player : players) {
 			if (player.colour().equals(colour)) return Optional.of(player.location());
@@ -354,12 +362,46 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 		return Optional.empty();
 	}
 
-	/*
-	Return for later
-	 */
+	private String winners() {
+		// If assigned "Detectives", detectives win
+		// If assigned "Mr X", Mr X wins
+		// If assigned "N/A", no-one has won yet
+		String none = "N/A";
+		String mrXWins = "Mr X";
+		String detectivesWin = "Detectives";
+
+		ScotlandYardPlayer mrX = getCurrentScotlandYardPlayer(BLACK);
+
+		// If Mr X is stuck (no available valid moves), detectives win
+		if (getValidMoves(mrX).size() == 0) return detectivesWin;
+
+		// If max rounds is reached, Mr X wins
+		if (currentRound == rounds.size()) return mrXWins;
+
+		// Checking if Mr X has been captured or if all detectives have no tickets left
+		int sumOfTickets = 0;
+		boolean hasTickets = false;
+
+		for (ScotlandYardPlayer detective : players) {
+			if (detective.isDetective()) {
+				// If Mr X has been captured, detectives win
+				if (detective.location() == mrX.location()) return detectivesWin;
+
+				// If all detectives have no tickets left, Mr X wins
+				for (int ticketCount : detective.tickets().values()) sumOfTickets += ticketCount;
+				hasTickets = sumOfTickets != 0;
+			}
+		}
+		if (!hasTickets) return mrXWins;
+
+		// If all else fails, no-one has won yet
+		return none;
+	}
+
+	// Simply checks if winners() returns a result
 	@Override
 	public boolean isGameOver() {
-		return false;
+		return winners().equals("Detectives") || winners().equals("Mr X");
 	}
 
 	@Override
