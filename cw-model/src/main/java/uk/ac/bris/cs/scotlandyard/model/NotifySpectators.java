@@ -2,8 +2,6 @@ package uk.ac.bris.cs.scotlandyard.model;
 
 import java.util.*;
 
-import static uk.ac.bris.cs.scotlandyard.model.Colour.BLACK;
-
 class NotifySpectators {
     static DoubleMove doubleMoveNotif(Collection<Spectator> spectators, DoubleMove move, int currentRound, List<Boolean> rounds, int revealedLocation, ScotlandYardView view) {
         // Hidden to hidden
@@ -41,6 +39,20 @@ class NotifySpectators {
         return chooseMove;
     }
 
+    static void ticketMoveWithRoundNotifAlt(Collection<Spectator> spectators, TicketMove move, int currentRound, List<Boolean> rounds, int destination, ScotlandYardView view) {
+        for (Spectator spectator : spectators) {
+            if (move.colour().isMrX()) {
+                spectator.onRoundStarted(view, currentRound); // Update round
+
+                --currentRound;
+
+                if (rounds.get(currentRound)) spectator.onMoveMade(view, move); // Reveal location
+                else spectator.onMoveMade(view, new TicketMove(move.colour(), move.ticket(), destination)); // Don't reveal location
+            }
+            else spectator.onMoveMade(view, move);
+        }
+    }
+
     static void ticketMoveWithRoundNotif(Collection<Spectator> spectators, TicketMove move, int currentRound, List<Boolean> rounds, int destination, ScotlandYardView view) {
         for (Spectator spectator : spectators) {
             if (move.colour().isMrX()) {
@@ -67,25 +79,7 @@ class NotifySpectators {
         for (Spectator spectator : spectators) spectator.onMoveMade(view, move);
     }
 
-    static void gameOverNotif(Collection<Spectator> spectators, List<ScotlandYardPlayer> players, String winners, ScotlandYardView view) {
-        switch (winners) {
-            // Create a set of detective colours and notify each spectator the winners are detectives
-            case "Detective":
-                Set<Colour> detectives = new HashSet<>();
-                for (ScotlandYardPlayer player : players) if (player.isDetective()) detectives.add(player.colour());
-
-                for (Spectator spectator : spectators) spectator.onGameOver(view, detectives);
-                break;
-
-            // Create a singleton set of just Mr X and notify each spectator the winner is Mr X
-            case "Mr X":
-                Set<Colour> mrX = Collections.singleton(BLACK);
-                for (Spectator spectator : spectators) spectator.onGameOver(view, mrX);
-                break;
-
-            // Do nothing
-            default:
-                break;
-        }
+    static void gameOverNotif(Collection<Spectator> spectators, Set<Colour> players,  ScotlandYardView view) {
+        for (Spectator spectator : spectators) spectator.onGameOver(view, players);
     }
 }

@@ -247,6 +247,17 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
     public void accept(Move move) {
         if (!validMoves.contains(requireNonNull(move))) throw new IllegalArgumentException("Can't pass null move");
 
+		// Updates current player
+		// Checks to see if round had finished
+        ++playerIndex;
+		if (playerIndex == players.size()) {
+			roundFinished = true;
+			playerIndex = 0;
+		}
+		else roundFinished = false;
+
+		// Define accept() methods of visit and give proper play logic
+		// Inform spectators of each event
 		MoveVisitor visitor = new MoveVisitor() {
 			ScotlandYardPlayer player = getCurrentScotlandYardPlayer(move.colour());
 			Collection<Spectator> spectatorList = getSpectators();
@@ -268,16 +279,16 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
         		player.removeTicket(move.ticket());
 				player.location(move.destination());
 
-				// Notify spectators that a move has been made
-				// Notify spectators that a new round has started
-				ticketMoveWithRoundNotif(spectatorList, move, currentRound, roundList, revealedLocation, view);
-
 				if (player.isMrX()) {
 					if (roundList.get(currentRound)) revealedLocation = player.location();
 					++currentRound;
 				}
 				// Give player's ticket to Mr X
 				else getCurrentScotlandYardPlayer(BLACK).addTicket(move.ticket());
+
+				// Notify spectators that a move has been made
+				// Notify spectators that a new round has started
+				ticketMoveWithRoundNotifAlt(spectatorList, move, currentRound, roundList, revealedLocation, view);
 			}
 
 			@Override
@@ -314,22 +325,16 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 			}
 		};
 
-		// Executes play logic and updates current player
+		// Executes play logic
         move.visit(visitor);
-        ++playerIndex;
-        if (playerIndex == players.size()) {
-        	roundFinished = true;
-        	playerIndex = 0;
-		}
-        else roundFinished = false;
-		if (isGameOver()) gameOverNotif(spectators, players, winners(), view);
 
 		ScotlandYardPlayer currentPlayer = getCurrentScotlandYardPlayer(getCurrentPlayer());
 		validMoves = getValidMoves(currentPlayer);
 
         // If the round is not finished, notify the next player to make a move
 		// Else, notify all spectators the rotation has finished
-		if (playerIndex != 0 && !isGameOver()) currentPlayer.player().makeMove(this, currentPlayer.location(), validMoves, this);
+		if (!roundFinished) currentPlayer.player().makeMove(this, currentPlayer.location(), validMoves, this);
+		else if (isGameOver()) gameOverNotif(spectators, getWinningPlayers(), view);
 		else for (Spectator spectator : spectators) spectator.onRotationComplete(view);
     }
 
