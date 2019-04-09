@@ -282,20 +282,21 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 				if (player.isMrX()) {
 					if (roundList.get(currentRound)) revealedLocation = player.location();
 					++currentRound;
+					roundNotif(spectatorList, currentRound, view);
 				}
 				// Give player's ticket to Mr X
 				else getCurrentScotlandYardPlayer(BLACK).addTicket(move.ticket());
 
-				// Notify spectators that a move has been made
-				// Notify spectators that a new round has started
-				ticketMoveWithRoundNotifAlt(spectatorList, move, currentRound, roundList, revealedLocation, view);
+				// Notify round start
+				// Notify ticket move (currentRound - 1)
+				ticketMoveNotif(spectatorList, move, currentRound - 1, roundList, revealedLocation, view);
 			}
 
 			@Override
 			public void visit(DoubleMove move) {
 				player.removeTicket(DOUBLE);
 
-				// An alternative version to the current move that appropriately hides/reveals Mr X's location
+				// Notify double move
 				DoubleMove shownMove = doubleMoveNotif(getSpectators(), move, currentRound, roundList, revealedLocation, view);
 
         		// Checks first movement
@@ -304,10 +305,10 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 				if (roundList.get(currentRound)) revealedLocation = player.location(); // If on reveal round
 				++currentRound;
 
-				// Notify spectators of the first movement
-				// Notify spectators that a new round has started
-				// (Make a new TicketMove with the location as the last revealedLocation if going into hidden round)
-				ticketMoveWithRoundNotif(getSpectators(), shownMove.firstMove(), currentRound, roundList, shownMove.firstMove().destination(), view);
+				// Notify round start
+				// Notify ticket move
+				roundNotif(spectatorList, currentRound, view);
+				ticketMoveNotif(spectatorList, shownMove.firstMove(), currentRound, roundList, shownMove.firstMove().destination(), view);
 
 				// Checks second movement
 				player.removeTicket(move.secondMove().ticket());
@@ -315,13 +316,15 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 				if (roundList.get(currentRound)) revealedLocation = player.location(); // If on reveal round
 				++currentRound;
 
-				// Notify spectators of the second movement
-				ticketMoveNotif(getSpectators(), shownMove.secondMove(), currentRound, roundList, shownMove.secondMove().destination(), view);
+				// Notify round start
+				// Notify ticket move
+				roundNotif(spectatorList, currentRound, view);
+				ticketMoveNotif(spectatorList, shownMove.secondMove(), currentRound, roundList, shownMove.secondMove().destination(), view);
         	}
 
 			@Override
 			public void visit(PassMove move) {
-				passMoveNotif(getSpectators(), move, view);
+				passMoveNotif(spectatorList, move, view);
 			}
 		};
 
@@ -333,7 +336,8 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 
         // If the round is not finished, notify the next player to make a move
 		// Else, notify all spectators the rotation has finished
-		if (!roundFinished) currentPlayer.player().makeMove(this, currentPlayer.location(), validMoves, this);
+        System.out.println(roundFinished + " ewfwef " + isGameOver() + " " + winners());
+		if (!roundFinished && !isGameOver()) currentPlayer.player().makeMove(this, currentPlayer.location(), validMoves, this);
 		else if (isGameOver()) gameOverNotif(spectators, getWinningPlayers(), view);
 		else for (Spectator spectator : spectators) spectator.onRotationComplete(view);
     }
@@ -399,7 +403,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 		ScotlandYardPlayer mrX = getCurrentScotlandYardPlayer(BLACK);
 
 		// If Mr X is stuck (no available valid moves), detectives win
-		if (getValidMoves(mrX).size() == 0) return detectivesWin;
+		if ((getValidMoves(mrX).size() == 0) && roundFinished) return detectivesWin;
 
 		// If max rounds is reached, Mr X wins
 		if ((currentRound == getRounds().size()) && roundFinished) return mrXWins;

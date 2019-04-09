@@ -17,52 +17,26 @@ class NotifySpectators {
         for (Spectator spectator : spectators) {
             if (rounds.get(currentRound) && rounds.get(currentRound + 1)) {
                 spectator.onMoveMade(view, chooseMove);
-                spectator.onRoundStarted(view, currentRound);
             }
             else if (rounds.get(currentRound)) {
                 chooseMove = R2H;
                 spectator.onMoveMade(view, chooseMove);
-                spectator.onRoundStarted(view, currentRound);
             }
             else if (rounds.get(currentRound + 1)) {
                 chooseMove = H2R;
                 spectator.onMoveMade(view, chooseMove);
-                spectator.onRoundStarted(view, currentRound);
             }
             else {
                 chooseMove = H2H;
                 spectator.onMoveMade(view, chooseMove);
-                spectator.onRoundStarted(view, currentRound);
             }
         }
 
         return chooseMove;
     }
 
-    static void ticketMoveWithRoundNotifAlt(Collection<Spectator> spectators, TicketMove move, int currentRound, List<Boolean> rounds, int destination, ScotlandYardView view) {
-        for (Spectator spectator : spectators) {
-            if (move.colour().isMrX()) {
-                spectator.onRoundStarted(view, currentRound); // Update round
-
-                --currentRound;
-
-                if (rounds.get(currentRound)) spectator.onMoveMade(view, move); // Reveal location
-                else spectator.onMoveMade(view, new TicketMove(move.colour(), move.ticket(), destination)); // Don't reveal location
-            }
-            else spectator.onMoveMade(view, move);
-        }
-    }
-
-    static void ticketMoveWithRoundNotif(Collection<Spectator> spectators, TicketMove move, int currentRound, List<Boolean> rounds, int destination, ScotlandYardView view) {
-        for (Spectator spectator : spectators) {
-            if (move.colour().isMrX()) {
-                if (rounds.get(currentRound)) spectator.onMoveMade(view, move); // Reveal location
-                else spectator.onMoveMade(view, new TicketMove(move.colour(), move.ticket(), destination)); // Don't reveal location
-
-                spectator.onRoundStarted(view, currentRound); // Update round
-            }
-            else spectator.onMoveMade(view, move);
-        }
+    static void roundNotif (Collection<Spectator> spectators, int currentRound, ScotlandYardView view) {
+        for (Spectator spectator : spectators) spectator.onRoundStarted(view, currentRound);
     }
 
     static void ticketMoveNotif(Collection<Spectator> spectators, TicketMove move, int currentRound, List<Boolean> rounds, int destination, ScotlandYardView view) {
