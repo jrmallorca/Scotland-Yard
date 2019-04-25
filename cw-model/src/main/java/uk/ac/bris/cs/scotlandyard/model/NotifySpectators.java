@@ -3,7 +3,7 @@ package uk.ac.bris.cs.scotlandyard.model;
 import java.util.*;
 
 class NotifySpectators {
-    static DoubleMove doubleMoveNotif(Collection<Spectator> spectators, DoubleMove move, int currentRound, List<Boolean> rounds, int revealedLocation, ScotlandYardView view) {
+    static void doubleMoveNotif(Collection<Spectator> spectators, DoubleMove move, int currentRound, List<Boolean> rounds, int revealedLocation, ScotlandYardView view) {
         // Hidden to hidden
         DoubleMove H2H = new DoubleMove(move.colour(), move.firstMove().ticket(), revealedLocation, move.secondMove().ticket(), revealedLocation);
         // Reveal to hidden
@@ -12,27 +12,12 @@ class NotifySpectators {
         DoubleMove H2R = new DoubleMove(move.colour(), move.firstMove().ticket(), revealedLocation, move.secondMove().ticket(), move.finalDestination());
 
         // Depending on which rounds are true, choose the correct DoubleMove from above
-        DoubleMove chooseMove = move;
-
         for (Spectator spectator : spectators) {
-            if (rounds.get(currentRound) && rounds.get(currentRound + 1)) {
-                spectator.onMoveMade(view, chooseMove);
-            }
-            else if (rounds.get(currentRound)) {
-                chooseMove = R2H;
-                spectator.onMoveMade(view, chooseMove);
-            }
-            else if (rounds.get(currentRound + 1)) {
-                chooseMove = H2R;
-                spectator.onMoveMade(view, chooseMove);
-            }
-            else {
-                chooseMove = H2H;
-                spectator.onMoveMade(view, chooseMove);
-            }
+            if (rounds.get(currentRound) && rounds.get(currentRound + 1)) spectator.onMoveMade(view, move);
+            else if (rounds.get(currentRound)) spectator.onMoveMade(view, R2H);
+            else if (rounds.get(currentRound + 1)) spectator.onMoveMade(view, H2R);
+            else spectator.onMoveMade(view, H2H);
         }
-
-        return chooseMove;
     }
 
     static void roundNotif (Collection<Spectator> spectators, int currentRound, ScotlandYardView view) {

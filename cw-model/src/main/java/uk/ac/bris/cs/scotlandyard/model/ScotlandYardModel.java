@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
-
 import com.google.errorprone.annotations.Var;
 import uk.ac.bris.cs.gamekit.graph.Edge;
 import uk.ac.bris.cs.gamekit.graph.Graph;
@@ -65,7 +64,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 		We'll temporarily put the detectives into an ArrayList so that we can loop through tests for them.
 		configuration represents mrX and first detective. Implement a for-each loop.
 
-		Code different to website because testNullDetectiveShouldThrow wouldn't work. We separately test
+		Code different to cw-model website because testNullDetectiveShouldThrow wouldn't work. We separately test
 		the firstDetective.
 		 */
 		ArrayList<PlayerConfiguration> configurations = new ArrayList<>();
@@ -226,8 +225,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 	@Override
 	public void startRotate() {
 		if (!isGameOver()) {
-			Colour currentColour = getCurrentPlayer();
-			ScotlandYardPlayer currentPlayer = getCurrentScotlandYardPlayer(currentColour);
+			ScotlandYardPlayer currentPlayer = getCurrentScotlandYardPlayer(getCurrentPlayer());
 			validMoves = getValidMoves(currentPlayer);
 
 			/*
@@ -282,13 +280,15 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 				if (player.isMrX()) {
 					if (roundList.get(currentRound)) revealedLocation = player.location();
 					++currentRound;
+					// Notify round start
 					roundNotif(spectatorList, currentRound, view);
 				}
 				// Give player's ticket to Mr X
 				else getCurrentScotlandYardPlayer(BLACK).addTicket(move.ticket());
 
-				// Notify round start
-				// Notify ticket move (currentRound - 1)
+				// Notify ticket move
+                // (currentRound - 1 because roundNotif is meant to go first but MoveNotif needs updated revealedLocation)
+				// (Also because we're only using it to see if we should reveal Mr X's location)
 				ticketMoveNotif(spectatorList, move, currentRound - 1, roundList, revealedLocation, view);
 			}
 
@@ -297,29 +297,11 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 				player.removeTicket(DOUBLE);
 
 				// Notify double move
-				DoubleMove shownMove = doubleMoveNotif(getSpectators(), move, currentRound, roundList, revealedLocation, view);
+				doubleMoveNotif(getSpectators(), move, currentRound, roundList, revealedLocation, view);
 
-        		// Checks first movement
-				player.removeTicket(move.firstMove().ticket());
-				player.location(move.firstMove().destination());
-				if (roundList.get(currentRound)) revealedLocation = player.location(); // If on reveal round
-				++currentRound;
-
-				// Notify round start
-				// Notify ticket move
-				roundNotif(spectatorList, currentRound, view);
-				ticketMoveNotif(spectatorList, shownMove.firstMove(), currentRound, roundList, shownMove.firstMove().destination(), view);
-
-				// Checks second movement
-				player.removeTicket(move.secondMove().ticket());
-				player.location(move.finalDestination());
-				if (roundList.get(currentRound)) revealedLocation = player.location(); // If on reveal round
-				++currentRound;
-
-				// Notify round start
-				// Notify ticket move
-				roundNotif(spectatorList, currentRound, view);
-				ticketMoveNotif(spectatorList, shownMove.secondMove(), currentRound, roundList, shownMove.secondMove().destination(), view);
+        		// Checks first movement then second movement
+				visit(move.firstMove());
+				visit(move.secondMove());
         	}
 
 			@Override
@@ -335,8 +317,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 		validMoves = getValidMoves(currentPlayer);
 
         // If the round is not finished, notify the next player to make a move
-		// Else, notify all spectators the rotation has finished
-        System.out.println(roundFinished + " ewfwef " + isGameOver() + " " + winners());
+		// Else, notify all spectators the rotation has finished or the game has finished
 		if (!roundFinished && !isGameOver()) currentPlayer.player().makeMove(this, currentPlayer.location(), validMoves, this);
 		else if (isGameOver()) gameOverNotif(spectators, getWinningPlayers(), view);
 		else for (Spectator spectator : spectators) spectator.onRotationComplete(view);
@@ -350,9 +331,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 	@Override
 	public List<Colour> getPlayers() {
 		List<Colour> tempPlayers = new ArrayList<>();
-		for (ScotlandYardPlayer player : players) {
-			tempPlayers.add(player.colour());
-		}
+		for (ScotlandYardPlayer player : players) tempPlayers.add(player.colour());
 		return unmodifiableList(tempPlayers);
 	}
 
@@ -361,9 +340,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 		Set<Colour> temp = new HashSet<>();
 
 		if (winners().equals("Detectives")) {
-			for (ScotlandYardPlayer player : players) {
-				if (player.isDetective()) temp.add(player.colour());
-			}
+			for (ScotlandYardPlayer player : players) if (player.isDetective()) temp.add(player.colour());
 		}
 		if (winners().equals("Mr X")) temp.add(BLACK);
 
