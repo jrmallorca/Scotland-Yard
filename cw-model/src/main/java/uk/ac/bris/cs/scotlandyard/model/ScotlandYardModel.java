@@ -309,12 +309,14 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 		// Executes play logic
         move.visit(visitor);
 
-		ScotlandYardPlayer currentPlayer = getCurrentScotlandYardPlayer(getCurrentPlayer());
-		validMoves = getValidMoves(currentPlayer);
-
         // If the round is not finished, notify the next player to make a move
 		// Else, notify all spectators the rotation has finished or the game has finished
-		if (!roundFinished && !isGameOver()) currentPlayer.player().makeMove(this, currentPlayer.location(), validMoves, this);
+		if (!roundFinished && !isGameOver()) {
+            ScotlandYardPlayer currentPlayer = getCurrentScotlandYardPlayer(getCurrentPlayer());
+            validMoves = getValidMoves(currentPlayer);
+
+		    currentPlayer.player().makeMove(this, currentPlayer.location(), validMoves, this);
+        }
 		else if (isGameOver()) gameOverNotif(spectators, getWinningPlayers(), view);
 		else for (Spectator spectator : spectators) spectator.onRotationComplete(view);
     }
