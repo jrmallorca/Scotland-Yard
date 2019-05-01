@@ -1,21 +1,17 @@
 package uk.ac.bris.cs.scotlandyard.model;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.*;
-import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static uk.ac.bris.cs.scotlandyard.model.Colour.BLACK;
 import static uk.ac.bris.cs.scotlandyard.model.NotifySpectators.*;
 import static uk.ac.bris.cs.scotlandyard.model.Ticket.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
-import com.google.errorprone.annotations.Var;
 import uk.ac.bris.cs.gamekit.graph.Edge;
 import uk.ac.bris.cs.gamekit.graph.Graph;
 import uk.ac.bris.cs.gamekit.graph.ImmutableGraph;
@@ -380,7 +376,7 @@ public class ScotlandYardModel implements ScotlandYardGame, Consumer<Move>, Move
 		ScotlandYardPlayer mrX = getCurrentScotlandYardPlayer(BLACK);
 
 		// If Mr X is stuck (no available valid moves), detectives win
-		if ((getValidMoves(mrX).size() == 0) && roundFinished) return detectivesWin;
+		if ((getValidMoves(mrX).isEmpty()) && roundFinished) return detectivesWin;
 
 		// If max rounds is reached, Mr X wins
 		if ((currentRound == getRounds().size()) && roundFinished) return mrXWins;
